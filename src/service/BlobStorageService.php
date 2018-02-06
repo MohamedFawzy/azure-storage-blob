@@ -49,6 +49,73 @@ final class BlobStorageService
             return $e->getMessage();
         }
 
-        return "Container with name ". $containerName. " created";
+        return  $containerName;
+    }
+
+    /**
+     * Upload media function
+     * @param $containerName
+     * @param $filePath
+     * @param $blobName
+     * @return string
+     * @throws \Exception
+     */
+    public function createBlob(string $containerName, string $filePath, string $blobName): string
+    {
+        if(!is_readable($filePath)){
+            throw new \Exception("File : ".  $filePath. " is not readable");
+        }
+
+        $content = fopen($filePath, "r");
+        try{
+
+            $this->blobRestProxy->createBlockBlob($containerName,$blobName,$content);
+
+        }catch (ServiceException $e){
+            return $e->getMessage();
+        }
+
+        return $blobName;
+    }
+
+    /**
+     * download blob which can be image , videos , etc
+     * @param string $containerName
+     * @param string $blobName
+     * @return string which is stream string need to use base 64 to return data
+     */
+    public function downloadBlob(string $containerName, string  $blobName): string
+    {
+        try{
+            $blob = $this->blobRestProxy->getBlob($containerName, $blobName);
+            $source = stream_get_contents($blob->getContentStream());
+        }catch (ServiceException $e){
+            return $e->getMessage();
+        }
+
+        return $source;
+    }
+
+
+    /**
+     * get all blobs in azure based on container name
+     * @param string $containerName
+     * @return string
+     */
+    public function listBlobs(string $containerName)
+    {
+        try{
+            $result = [];
+            $blobList = $this->blobRestProxy->listBlobs($containerName);
+            $blobs    =  $blobList->getBlobs();
+            foreach ($blobs as $blob){
+                $result[$blob->getName()] = $blob->getUrl();
+            }
+
+        }catch (ServiceException $e){
+
+            return $e->getMessage();
+        }
+        return $result;
     }
 }
