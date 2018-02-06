@@ -16,8 +16,7 @@ class TestBlobStorageService extends TestCase
     private $service;
     private $faker;
     private $filePath;
-    private $containerName;
-
+    
 
     const ENV_DIR_PATH= __DIR__.'/../../';
 
@@ -32,8 +31,6 @@ class TestBlobStorageService extends TestCase
         $this->service = new BlobStorageService($this->account_name, $this->account_key);
         $this->faker  = \Faker\Factory::create();
         $this->filePath = __DIR__."/test.png";
-        $this->containerName = $this->faker->word(20);
-
 
         parent::__construct($name, $data, $dataName);
 
@@ -54,11 +51,9 @@ class TestBlobStorageService extends TestCase
         $containerName = $this->faker->word(20);
         $result = $this->service->createContainer($containerName);
         $this->assertSame($containerName, $result);
-        //$test->createBlob("campaigns", $filePath, "test1.jpg");
         // upload image to blob storage
-        $filePath = "test.png";
         $blobName = $this->faker->word(20);
-        $result = $this->service->createBlob($containerName, $filePath,$blobName);
+        $result = $this->service->createBlob($containerName, $this->filePath,$blobName);
         $this->assertSame($blobName,$result);
     }
 
@@ -68,7 +63,6 @@ class TestBlobStorageService extends TestCase
         $containerName = $this->faker->word(20);
         $result = $this->service->createContainer($containerName);
         $this->assertSame($containerName, $result);
-        //$test->createBlob("campaigns", $filePath, "test1.jpg");
         // upload image to blob storage
         $blobName = $this->faker->word(20);
         $result = $this->service->createBlob($containerName, $this->filePath,$blobName);
