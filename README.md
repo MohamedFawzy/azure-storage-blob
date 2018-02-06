@@ -1,4 +1,4 @@
-# azure-storage-blob
+# Azure Storage Blobs
 - Microsoft azure blob storage service gateway .
 
 
@@ -16,7 +16,7 @@
 # Install
 - `composer require azure/storage-blob`
 
-# Usage
+# Testing
 - `cp .env.example cp.env`  
 - Update the following keys:
 
@@ -24,5 +24,6 @@
         
         2- ACCOUNT_KEY = "ACCOUNT KEY CAN BE ACCESSED FROM AZURE DASHBOARD"
         
-- Call service with constants from env file .
+- Run the following command .
+`./vendor/bin/phpunit`
         

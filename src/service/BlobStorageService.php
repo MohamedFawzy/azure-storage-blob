@@ -3,7 +3,7 @@
  * enable strict typing supporting from php 7
  */
 declare(strict_types=1);
-namespace Azure\Storage\Blob;
+namespace Azure\Storage\Blob\service;
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
 use MicrosoftAzure\Storage\Common\Exceptions\ServiceException;
 use MicrosoftAzure\Storage\Blob\Models\CreateContainerOptions;
@@ -27,8 +27,12 @@ final class BlobStorageService
     public function __construct(string $accountName, string $accountKey)
     {
         $connectionString = "DefaultEndpointsProtocol=http;AccountName=".$accountName.";AccountKey=".$accountKey."";
-        // open connection string with azure api
-        $this->blobRestProxy = BlobRestProxy::createBlobService($connectionString);
+        try{
+            // open connection string with azure api
+            $this->blobRestProxy = BlobRestProxy::createBlobService($connectionString);
+        }catch (ServiceException $e){
+            return $e->getCode();
+        }
     }
 
     /**
@@ -100,7 +104,7 @@ final class BlobStorageService
     /**
      * get all blobs in azure based on container name
      * @param string $containerName
-     * @return string
+     * @return string|array
      */
     public function listBlobs(string $containerName)
     {
