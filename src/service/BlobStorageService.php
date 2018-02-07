@@ -8,6 +8,7 @@ use MicrosoftAzure\Storage\Blob\BlobRestProxy;
 use MicrosoftAzure\Storage\Common\Exceptions\ServiceException;
 use MicrosoftAzure\Storage\Blob\Models\CreateContainerOptions;
 use MicrosoftAzure\Storage\Blob\Models\PublicAccessType;
+use MicrosoftAzure\Storage\Blob\Models\CreateBlockBlobOptions;
 
 /**
  * Class BlobStorageService
@@ -72,8 +73,9 @@ final class BlobStorageService
 
         $content = fopen($filePath, "r");
         try{
-
-            $this->blobRestProxy->createBlockBlob($containerName,$blobName,$content);
+            $blobOptions = new CreateBlockBlobOptions();
+            $blobOptions->setContentType(mime_content_type($content));
+            $this->blobRestProxy->createBlockBlob($containerName,$blobName,$content, $blobOptions);
 
         }catch (ServiceException $e){
             return $e->getMessage();
